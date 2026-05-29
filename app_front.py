@@ -28,13 +28,13 @@ with tab_tasacion:
     if st.button("Tasar ahora", key="btn_tasa"):
         resp = requests.post(f"{API_URL}/analizar_vehiculo", json={"caracteristicas": datos_tasa})
         
-        # --- DEPURACIÓN ---
-        st.write("Estado de la respuesta:", resp.status_code)
-        st.write("Contenido de la respuesta:", resp.json()) 
-        # ------------------
-        
-        res = resp.json()["diagnostico"]
-        st.metric("Precio Sugerido", f"${res['precio_sugerido_usd']:,}")
+        if resp.status_code == 200:
+            res = resp.json()["diagnostico"]
+            st.metric("Precio Sugerido", f"${res['precio_sugerido_usd']:,}")
+            st.write(f"**Segmento:** {res['segmento_estrategico']}")
+            st.write(f"**Clasificación:** {res['clasificacion_mercado']}")
+        else:
+            st.error("Ocurrió un error al consultar la tasación. Por favor, intentá nuevamente.")
 
 # --- PESTAÑA 2: GANGAS ---
 with tab_gangas:
