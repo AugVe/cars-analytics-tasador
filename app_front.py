@@ -27,7 +27,7 @@ with tab_tasacion:
     datos_tasa = formulario_datos("tasa") # Prefijo único para esta pestaña
     if st.button("Tasar ahora", key="btn_tasa"):
         resp = requests.post(f"{API_URL}/analizar_vehiculo", json={"caracteristicas": datos_tasa})
-        res = resp.json()["diagnostico_cars_analytics"]
+        res = resp.json()["diagnostico"]
         st.metric("Precio Sugerido", f"${res['precio_sugerido_usd']:,}")
         st.write(f"**Segmento:** {res['segmento_estrategico']}")
 
@@ -48,7 +48,7 @@ with tab_gangas:
         # Nueva distribución: tres métricas en una fila
         col1, col2, col3 = st.columns(3)
         col1.metric("Publicado", f"${res['precio_vendedor_usd']:,}")
-        col2.metric("Estimado", f"${res['tasacion_orbe_usd']:,}")
+        col2.metric("Estimado", f"${res['tasacion_usd']:,}")
         col3.metric("Margen", f"${res['margen_diferencia_usd']:,}")
         
         # Mensaje de decisión al final
