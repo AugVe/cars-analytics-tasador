@@ -1,5 +1,8 @@
 import streamlit as st
 import requests
+import os
+
+API_URL = os.getenv("API_URL", "http://127.0.0.1:8000")
 
 st.set_page_config(page_title="Cars Analytics", page_icon="🚗")
 
@@ -23,8 +26,8 @@ with tab_tasacion:
     st.header("Tasación Automática")
     datos_tasa = formulario_datos("tasa") # Prefijo único para esta pestaña
     if st.button("Tasar ahora", key="btn_tasa"):
-        resp = requests.post("http://127.0.0.1:8000/analizar_vehiculo", json={"caracteristicas": datos_tasa})
-        res = resp.json()["diagnostico_orbe_analytics"]
+        resp = requests.post(f"{API_URL}/analizar_vehiculo", json={"caracteristicas": datos_tasa})
+        res = resp.json()["diagnostico_cars_analytics"]
         st.metric("Precio Sugerido", f"${res['precio_sugerido_usd']:,}")
         st.write(f"**Segmento:** {res['segmento_estrategico']}")
 
@@ -36,7 +39,7 @@ with tab_gangas:
     
     if st.button("Analizar Inversión", key="btn_ganga"):
         datos = {"caracteristicas": datos_ganga, "precio_publicado": precio_pub}
-        resp = requests.post("http://127.0.0.1:8000/detectar_ganga", json=datos)
+        resp = requests.post(f"{API_URL}/detectar_ganga", json=datos)
         res = resp.json()["analisis_financiero"]
         
         st.divider()
