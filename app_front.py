@@ -30,9 +30,30 @@ with tab_tasacion:
         
         if resp.status_code == 200:
             res = resp.json()["diagnostico"]
+            
+            # 1. Mostramos los resultados técnicos
             st.metric("Precio Sugerido", f"${res['precio_sugerido_usd']:,}")
-            st.write(f"**Segmento:** {res['segmento_estrategico']}")
-            st.write(f"**Clasificación:** {res['clasificacion_mercado']}")
+            
+            # 2. Mostramos el detalle
+            col_a, col_b = st.columns(2)
+            col_a.write(f"**Segmento:** {res['segmento_estrategico']}")
+            col_b.write(f"**Clasificación:** {res['clasificacion_mercado']}")
+            
+            # 3. Agregamos el análisis inteligente
+            st.divider()
+            st.subheader("Análisis Estratégico")
+            
+            segmento = res['segmento_estrategico']
+            gama = res['clasificacion_mercado']
+            
+            if segmento == "Deportivos Premium" and gama == "Gama Estándar / Baja":
+                st.info("💡 **Oportunidad Detectada:** Este vehículo tiene ADN de alto rendimiento pero se valora como un modelo generalista. Excelente para entusiastas que buscan potencia a bajo costo.")
+            elif segmento == "SUVs y Vehículos Pesados" and gama == "Gama Alta / Premium":
+                st.warning("🛡️ **Perfil de Seguridad:** Vehículo posicionado en el sector premium; requiere una inversión superior en mantenimiento y seguros.")
+            elif segmento == "Económicos Citadinos":
+                st.success("✅ **Perfil Eficiente:** Ideal para movilidad urbana; bajo costo operativo y alta liquidez en el mercado.")
+            else:
+                st.write(f"El vehículo se clasifica como {segmento} y se encuentra en {gama}.")
         else:
             st.error("Ocurrió un error al consultar la tasación. Por favor, intentá nuevamente.")
 
